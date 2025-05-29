@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="="tr">
+<html lang="tr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -47,7 +47,7 @@
     <h3>Pandomim Cafe'yi biliyor musun?</h3>
     <label><input type="radio" name="q4" value="duymadim" /> Hayır</label><br/>
     <label><input type="radio" name="q4" value="duydum" /> Duymuştum ama gitmedim</label><br/>
-    <label><input type="radio" name="q4" value="gittim" /> Gittim</label><br/>
+    <label><input type="radio" name="q4" value="gittim" /> Tabii ki gittim, gitmez olur muyum?</label><br/>
     <button onclick="degerlendir()">Devam Et</button>
   </div>
 
@@ -55,11 +55,9 @@
     <h3>Bugün kendini nasıl hissediyorsun?</h3>
     <label><input type="radio" name="q1" value="iyi" /> Harika</label><br/>
     <label><input type="radio" name="q1" value="yorgun" /> Yorgun</label><br/>
-
     <h3>Aklında en çok ne var?</h3>
     <label><input type="radio" name="q2" value="ask" /> Aşk</label><br/>
     <label><input type="radio" name="q2" value="kariyer" /> Kariyer</label><br/>
-
     <h3>En çok neyi diliyorsun?</h3>
     <label><input type="radio" name="q3" value="surpriz" /> Sürpriz</label><br/>
     <label><input type="radio" name="q3" value="huzur" /> Huzur</label><br/>
@@ -67,13 +65,6 @@
   </div>
 
   <div id="result"></div>
-
-  <div class="parola-bolumu" id="parolaBolumu">
-    <h3>🔐 Günün parolasını biliyor musun?</h3>
-    <input type="text" id="parolaInput" placeholder="Parolayı buraya yaz" />
-    <button onclick="kontrolEtParola()">Parolayı Gönder</button>
-    <p id="parolaSonucu"></p>
-  </div>
 
   <script>
     document.getElementById("ilkSoru").style.display = "block";
@@ -84,12 +75,18 @@
         alert("Lütfen bir seçenek seç.");
         return;
       }
-      if (q4.value === "gittim") {
+
+      const zatenYonlendirildi = localStorage.getItem("carkYonlendirildi");
+
+      if ((q4.value === "duymadim" || q4.value === "duydum") && !zatenYonlendirildi) {
+        localStorage.setItem("carkYonlendirildi", "true");
+        alert("🎁 Hediye çarkına yönlendiriliyorsun!");
+        window.location.href = "https://pandomimcafe.github.io/PANDOM-MCAFE/";
+      } else if (q4.value === "gittim") {
         document.getElementById("ilkSoru").style.display = "none";
         document.getElementById("falBolumu").style.display = "block";
       } else {
-        alert("🎁 Hediye çarkına yönlendiriliyorsun!");
-        window.location.href = "https://pandomimcafe.github.io/PANDOM-MCAFE/";
+        alert("⚠️ Bu cihaz daha önce çarka yönlendirildi.");
       }
     }
 
@@ -113,28 +110,6 @@
       document.getElementById("falBolumu").style.display = "none";
       document.getElementById("result").innerText = fal;
       document.getElementById("result").style.display = "block";
-      document.getElementById("parolaBolumu").style.display = "block";
-    }
-
-    async function kontrolEtParola() {
-      const parola = document.getElementById("parolaInput").value.trim().toLowerCase();
-      const sonuc = document.getElementById("parolaSonucu");
-
-      try {
-        const res = await fetch("https://pandomimcafe.github.io/parola.json");
-        const data = await res.json();
-        const gecerli = data.parola.toLowerCase();
-        if (parola === gecerli) {
-          sonuc.innerText = "💌 Özel iltifat: Senin enerjin bulunduğun ortamı aydınlatıyor!";
-          sonuc.style.color = "green";
-        } else {
-          sonuc.innerText = "❌ Parola yanlış.";
-          sonuc.style.color = "red";
-        }
-      } catch (e) {
-        sonuc.innerText = "⚠️ Parola kontrol edilemedi.";
-        sonuc.style.color = "orange";
-      }
     }
   </script>
 </body>
