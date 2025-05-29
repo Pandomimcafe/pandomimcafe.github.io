@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Makeup İlhamı</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: linear-gradient(to right, #f8cdda, #f88c9e);
+      padding: 40px;
+      text-align: center;
+      color: #333;
+    }
+    .container {
+      background: #fff0f5;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    input, button {
+      margin-top: 15px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #e75480;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #iltifatSonucu {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #c71585;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>💄 Güzelliğine İlham Ver</h2>
+    <p>Makeup odasına özel parolayı biliyor musun?</p>
+    <input type="text" id="makeupParolaInput" placeholder="Parolayı buraya yaz" />
+    <button onclick="kontrolEtMakeupParola()">Gönder</button>
+    <div id="iltifatSonucu"></div>
+  </div>
+
+  <script>
+    async function kontrolEtMakeupParola() {
+      const parola = document.getElementById("makeupParolaInput").value.trim().toLowerCase();
+      const sonuc = document.getElementById("iltifatSonucu");
+
+      try {
+        const res = await fetch("makeup-parola.json");
+        const data = await res.json();
+        const gecerli = data.parola.toLowerCase();
+        const iltifatlar = data.iltifatlar;
+
+        if (parola === gecerli) {
+          const rastgele = iltifatlar[Math.floor(Math.random() * iltifatlar.length)];
+          sonuc.innerText = "💖 " + rastgele;
+        } else {
+          sonuc.innerText = "❌ Parola yanlış.";
+        }
+      } catch (e) {
+        sonuc.innerText = "⚠️ Parola kontrol edilemedi.";
+      }
+    }
+  </script>
+</body>
+</html>
